@@ -1,5 +1,10 @@
+;;;;;;;;;;;;;;;;;
+;; global vars ;;
+;;;;;;;;;;;;;;;;;
 
-; global vars
+;;;;;;;;;;;;;;;;;;;
+;;;; Chapter 1 ;;;;
+
 (defparameter *nodes* '((living-room (you are in the living room. a wizard is snoring loudly on the couch.))
 						(garden (you are in a beautiful garden.
 									 there is a well in front of you.))
@@ -16,7 +21,24 @@
 								   (chain garden)
 								   (frog garden)))
 
-; function defs 
+(defparameter *location* 'living-room)
+
+
+;;;;;;;;;;;;;;;;;;;
+;;;; Chapter 2 ;;;;
+
+(defparameter *allowed-commands* '(look walk pickup inventory))
+
+
+
+
+;;;;;;;;;;;;;;;;;;;
+;; function defs ;;
+;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;
+;;;; Chapter 1 ;;;;
+
 (defun describe-location (location nodes)
   (cadr (assoc location nodes)))
 
@@ -25,5 +47,85 @@
 
 (defun describe-paths (location edges)
   (apply #'append (mapcar #'describe-path (cdr (assoc location edges)))))
+
+(defun objects-at (loc objs obj-locs)
+	  (labels ((at-loc-p (obj)
+				(eq (cadr (assoc obj obj-locs)) loc)))
+		(remove-if-not #'at-loc-p objs)))
+
+(defun describe-objects (loc objs obj-loc)
+  (labels ((describe-obj (obj)
+						 `(you see a ,obj on the floor.)))
+	(apply #'append (mapcar #'describe-obj (objects-at loc objs obj-loc)))))
+
+(defun look ()
+  (append (describe-location *location* *nodes*)
+		  (describe-paths *location* *edges*)
+		  (describe-objects *location* *objects* *object-locations*)))
+
+(defun walk (direction)
+  (let ((next (find direction (cdr (assoc *location* *edges*)) :key #'cadr)))
+	(if next (progn (setf *location* (car next)) (look))
+	  '(you cannot go that way.))))
+
+(defun pickup (object)
+  (cond ((member object (objects-at *location* *objects* *object-locations*))
+		 (push (list object 'body) *object-locations*)
+		 `(you are now carrying the ,object))
+		(t '(you cannot get that))))
+
+(defun inventory ()
+  (cons 'items- (objects-at 'body *objects* *object-locations*)))
+
+;;;;;;;;;;;;;;;;;;;
+;;;; Chapter 2 ;;;;
+
+;(defun say-hello ()
+;  (print "Please type your name: ")
+;  (let ((name (read)))
+;	(print "Nice to meet you, ")
+;	(print name)))
+
+(defun add-five (num)
+  (print "Please enter a number: ")
+  (let ((num (read)))
+	(print "When I add five I get ")
+	(print (+ num 5))))
+
+(defun test-princ ()
+  (progn (princ "This sentence will be interrupted")
+		 (princ #\newline)
+		 (princ "by an annoying newline character.")))
+
+(defun say-hello ()
+  (princ "Please state your name: ")
+  (let ((name (read-line)))
+	(princ "Nice to meet you, ")
+	(princ name)))
+
+;(defun game-repl ()
+;  (loop (print (eval (read)))))
+
+(defun game-repl ()
+  (let ((cmd (game-read)))
+	(unless (eq (car cmd) 'quit)
+	  (game-print (game-eval (cmd)))
+	  (game-repl))))
+
+(defun game-read ()
+  (let ((cmd (read-from-string
+			   (concatenate 'string "(" (read-line) ")"))))
+	(flet ((quote-it (x)
+					 (list 'quote x)))
+	  (cons (car cmd) (mapcar #'quote-it (cdr cmd))))))
+
+(defun game-eval (sexp)i
+  (if (member (car sexp) *allowed-commands*)
+	(eval sexp)
+	'(i do not know that command.)))
+
+
+
+
 
 
