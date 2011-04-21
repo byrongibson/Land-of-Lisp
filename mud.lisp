@@ -124,8 +124,28 @@
 	(eval sexp)
 	'(i do not know that command.)))
 
-(defun test ())
+(defun tweak-text (1st caps lit)
+  (when 1st
+	(let ((item (car 1st))
+		  (rest (cdr 1st)))
+	  (cond ((eq item #\space) (cons item (tweak-text rest caps lit)))
+			((member item '(#\! #\? #\.)) (cons item (tweak-text rest t lit)))
+			((eq item '#\") (tweak-text rest caps (not lit)))
+			(lit (cons item (tweak-text rest nil lit)))
+			((or caps lit) (cons (char-upcase item) (tweak-text rest nil nil)))
+			(t (cons (char-downcase item) (tweak-text rest nil nil)))))))
 
+(defun game-print (lst)
+  (princ (coerce (tweak-text (coerce (string-trim "() " (prin1-to-string lst))
+									 'list)
+							 t
+							 nil)
+				 'string))
+  (fresh-line))
+
+
+
+	  
 
 
 
