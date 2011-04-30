@@ -103,14 +103,6 @@
 	(princ "Nice to meet you, ")
 	(princ name)))
 
-;(defun game-repl ()
-;  (loop (print (eval (read)))))
-
-(defun game-repl ()
-  (let ((cmd (game-read)))
-	(unless (eq (car cmd) 'quit)
-	  (game-print (game-eval (cmd)))
-	  (game-repl))))
 
 (defun game-read ()
   (let ((cmd (read-from-string
@@ -119,10 +111,12 @@
 					 (list 'quote x)))
 	  (cons (car cmd) (mapcar #'quote-it (cdr cmd))))))
 
-(defun game-eval (sexp)i
+
+(defun game-eval (sexp)
   (if (member (car sexp) *allowed-commands*)
 	(eval sexp)
 	'(i do not know that command.)))
+
 
 (defun tweak-text (1st caps lit)
   (when 1st
@@ -135,8 +129,8 @@
 			((or caps lit) (cons (char-upcase item) (tweak-text rest nil nil)))
 			(t (cons (char-downcase item) (tweak-text rest nil nil)))))))
 
-(defun game-print (lst)
-  (princ (coerce (tweak-text (coerce (string-trim "() " (prin1-to-string lst))
+(defun game-print (1st)
+  (princ (coerce (tweak-text (coerce (string-trim "() " (prin1-to-string 1st))
 									 'list)
 							 t
 							 nil)
@@ -144,6 +138,14 @@
   (fresh-line))
 
 
+;(defun game-repl ()
+;  (loop (print (eval (read)))))
+
+(defun game-repl ()
+  (let ((cmd (game-read)))
+	(unless (eq (car cmd) 'quit)
+	  (game-print (game-eval cmd))
+	  (game-repl))))
 
 	  
 
