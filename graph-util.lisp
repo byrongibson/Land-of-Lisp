@@ -1,6 +1,6 @@
 ;; Graph visualization lib
 
-;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;
 ;; Parameters ;;
 ;;;;;;;;;;;;;;;;
 
@@ -19,7 +19,7 @@
 ;;; Functions ;;
 ;;;;;;;;;;;;;;;;
 
-;; Convert node into valid DOT format
+;; Remove DOT-invalid chars from node 
 (defun dot-name (exp)
   (substitute-if #\_ (complement #'alphanumericp) (prin1-to-string exp)))
 
@@ -56,14 +56,14 @@
 					 (cdr node)))
 		edges))
 
-;; Combine encoded nodes and edges into DOT format for writing to file
+;; Combine encoded nodes and edges into DOT format 
 (defun graph->dot (nodes edges)
   (princ "digraph{")
   (nodes->dot nodes)
   (edges->dot edges)
   (princ "}"))
 
-;; Write dot data directly to png
+;; Write dot data to .dot and .png
 (defun dot->png (fname thunk)
   (with-open-file (*standard-output*
 					fname
@@ -72,10 +72,12 @@
 	(funcall thunk))
   (ext:shell (concatenate 'string "dot -Tpng -O" fname)))
 
+;; wrapper function
 (defun graph->png (fname nodes edges)
   (dot->png fname (lambda () (graph->dot nodes edges))))
 
 ;test
 ;(defun graph-png (fname nodes edges)
 ;  (dot-png fname (graph-dot nodes edges)))
+
 
