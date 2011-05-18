@@ -1,15 +1,27 @@
 ;;;;;;;;;;;;;;;;;
+;;  settings   ;;
+;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;
+;;  Chapter 7  ;;
+
+;; enable circular lists & self-referential data structures
+(setf *print-circle* t)
+
+;;;;;;;;;;;;;;;;;
 ;; global vars ;;
 ;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;
-;;;; Chapter 1 ;;;;
+;;;;;;;;;;;;;;;;;
+;;  Chapter 1  ;;
 
+;; redefined as *wizard-nodes* p. 114
 (defparameter *nodes* '((living-room (you are in the living room. a wizard is snoring loudly on the couch.))
 						(garden (you are in a beautiful garden.
 									 there is a well in front of you.))
 						(attic (you are in the attic.  there is a giant welding torch in the corner.))))
 
+;; redefined as *wizard-edges* p. 114
 (defparameter *edges* '((living-room (garden west door) (attic upstairs ladder))
 						(attic (living-room downstairs ladder))
 						(garden (living-room east door))))
@@ -30,7 +42,29 @@
 (defparameter *allowed-commands* '(look walk pickup inventory))
 
 
+;;;;;;;;;;;;;;;;;;;
+;;;; Chapter 3 ;;;;
 
+(defparameter *house* '(((walls (mortar (cement)
+											   (water)
+											   (sand))
+									   (bricks))
+							   (windows (glass)
+										(frames)
+										(curtains))
+							   (roof (shingles)
+									 (chimney)))))
+
+;;;;;;;;;;;;;;;;;;;
+;;;; Chapter 7 ;;;;
+
+(defparameter *wizard-nodes* '((living-room (you are in the living room.  a wizard is snoring on the couch.))
+							   (garden (you are in a beautiful garden.  there is a well in front of you.))
+							   (attic (you are in the attic.  there is a giant welding torch in the corner.))))
+
+(defparameter *wizard-edges* '((living-room (garden west door) (attic upstairs ladder))
+							   (garden (living-room east door))
+							   (attic (living-room downstairs ladder))))
 
 ;;;;;;;;;;;;;;;;;;;
 ;; function defs ;;
