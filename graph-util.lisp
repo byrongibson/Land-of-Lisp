@@ -1,5 +1,3 @@
-;; Graph visualization lib
-
 ;;;;;;;;;;;;;;;;
 ;; Parameters ;;
 ;;;;;;;;;;;;;;;;
@@ -45,7 +43,7 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Directed Graph ;;
 
-;; Encode edges into DOT format
+;; Encode edges into directed graph DOT format
 (defun dedges->dot (edges)
   (mapc (lambda (node)
 			   (mapc (lambda (edge)
@@ -59,7 +57,7 @@
 					 (cdr node)))
 		edges))
 
-;; Combine encoded nodes and edges into DOT format 
+;; Combine encoded nodes and edges into directed graph DOT format 
 (defun dgraph->dot (nodes edges)
   (princ "digraph{")
   (nodes->dot nodes)
@@ -73,7 +71,7 @@
 					:direction :output
 					:if-exists :supersede)
 	(funcall thunk))
-  (ext:shell (concatenate 'string "dot -Tpng -O" fname ".dot")))
+  (ext:shell (concatenate 'string "dot -Tpng -O " fname ".dot")))
 
 ;; wrapper 
 (defun dgraph->png (fname nodes edges)
@@ -83,7 +81,7 @@
 
 ;test
 ;(defun dgraph-png (fname nodes edges)
-;  (dot-png fname (graph->dot nodes edges)))
+;  (dot->png fname (graph->dot nodes edges)))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Undirected Graph ;;
@@ -109,7 +107,7 @@
   (princ "}"))
 
 (defun ugraph->png (fname nodes edges)
-  (dot-png fname 
+  (dot->png fname 
 		   (lambda ()
 			 (ugraph->dot nodes edges))))
 
